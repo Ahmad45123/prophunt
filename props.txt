@@ -1,0 +1,7 @@
+﻿# https://github.com/Guad/MapEditor/blob/master/ObjectList.ini
+
+hei_prop_heist_ammo_box
+# prop_plant_int_02a
+# prop_plant_int_02b
+# prop_poolball_1
+# prop_poolball_cue

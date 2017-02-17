@@ -1,0 +1,11 @@
+﻿<meta>
+	<info name="Prophunt" description="Props hide, hunters find." author="Miss Melissa" type="gamemode" />
+
+	<script src="Prophunt.cs" type="server" lang="csharp" />
+	<script src="PhEventQueue.cs" type="server" lang="csharp" />
+	<script src="PhPlayer.cs" type="server" lang="csharp" />
+	<script src="PhGameState.cs" type="server" lang="csharp" />
+	<script src="PhMetadata.cs" type="server" lang="csharp" />
+
+	<script src="prophunt.js" type="client" lang="javascript" />
+</meta>
