@@ -285,3 +285,6 @@ __pycache__/
 *.btm.cs
 *.odx.cs
 *.xsd.cs
+
+#Ignore the types-gtanetwork folder. (It gets redownloaded once the NuGET package is restored.)
+types-gtanetwork/
