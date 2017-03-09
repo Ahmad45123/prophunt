@@ -172,23 +172,21 @@ namespace prophunt
 			m_events.triggerClientEventForAll("prophunt_state", (int)state);
 
 			if (m_gameState == PhGameState.Hiding) {
-				//TODO: Players should be put into a different dimension here so hiders can't be seen if a seeker hides their HUD.
-				// (But hiders should still be able to see the seakers!)
-
 				foreach (var player in m_players) {
 					player.CleanUp();
 					player.Seeker = !player.Seeker;
 
+                    //Here seekers can't see hiders but hiders can see seekers.
 					if (player.Seeker) {
 						player.Client.nametagVisible = true;
 						player.Client.freezePosition = true;
-
+					    player.Client.dimension = 0;
 					} else {
 						player.Client.nametagVisible = false;
 						player.Client.freezePosition = false;
 						player.Client.removeAllWeapons();
-
-						GivePlayerRandomProp(player.Client);
+                        player.Client.dimension = 1;
+                        GivePlayerRandomProp(player.Client);
 					}
 				}
 
@@ -198,7 +196,8 @@ namespace prophunt
 						player.Client.freezePosition = false;
 						player.Client.giveWeapon(WeaponHash.Grenade, 1, false, true);
 						player.Client.giveWeapon(WeaponHash.SMG, 5000, true, true);
-					}
+                        player.Client.dimension = 0; //Return back to dimension zero so he can search for hiders.
+                    }
 				}
 
 			} else if (m_gameState == PhGameState.EndOfRound) {
