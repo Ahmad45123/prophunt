@@ -1,5 +1,6 @@
-"use strict";
 /// <reference path="types-gtanetwork/index.d.ts" />
+"use strict";
+// These drawn rays are just for testing
 var DrawnRay = (function () {
     function DrawnRay() {
     }
@@ -39,8 +40,10 @@ function hasPlayer(handle) {
     return false;
 }
 function initializePlayer(handle) {
-    if (!hasPlayer) {
+    if (!hasPlayer(handle)) {
         g_playerList.push(handle);
+    }
+    else {
     }
     API.setPlayerNametagVisible(handle, false);
     if (handle.Value == API.getLocalPlayer().Value) {
@@ -73,7 +76,10 @@ API.onLocalPlayerShoot.connect(function (weaponUsed, aimCoords) {
     newRay.to = newRay.from.Add(dir);
     var raycast = API.createRaycast(newRay.from, newRay.to, -1 /* Everything */, null);
     if (raycast.didHitEntity) {
-        API.setEntityTransparency(raycast.hitEntity, 127);
+        //TODO: This needs to hit the prop as well as the player.
+        //TODO: A player (or prop of player) hit should be an instant kill and a point for the seekers. Hider should be put into spectating now.
+        //TODO: A raycast miss or a non-player-prop hit should hurt the player. I suppose heavier weapons (with AOE) should hurt more.
+        API.setEntityTransparency(raycast.hitEntity, 127); // This is just here to quickly visualize what we're hitting
         var player = API.getEntitySyncedData(raycast.hitEntity, "player");
         if (player != null && !player.IsNull) {
             API.sendChatMessage("Hit player: ~g~" + API.getPlayerName(player));
@@ -128,8 +134,12 @@ API.onServerEventTrigger.connect(function (name, args) {
     }
 });
 API.onKeyDown.connect(function (sender, e) {
-    if (e.KeyCode == Keys.E) {
+    if (e.KeyCode == Keys.E && (g_gameState == GameState.Hiding || g_gameState == GameState.Seeking)) {
         g_rotationLocked = !g_rotationLocked;
+        if (g_rotationLocked)
+            API.setEntityPositionFrozen(API.getLocalPlayer(), true);
+        else
+            API.setEntityPositionFrozen(API.getLocalPlayer(), false);
     }
 });
 API.onUpdate.connect(function () {

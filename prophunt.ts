@@ -41,8 +41,8 @@ function syncCurrentRotation() {
 }
 
 function hasPlayer(handle: LocalHandle) {
-	for (var player of g_playerList) {
-		if (player.Value == handle.Value) {
+    for (var player of g_playerList) {
+        if (player.Value == handle.Value) {
 			return true;
 		}
 	}
@@ -50,14 +50,15 @@ function hasPlayer(handle: LocalHandle) {
 }
 
 function initializePlayer(handle: LocalHandle) {
-	if (!hasPlayer) {
-		g_playerList.push(handle);
-	}
+    if (!hasPlayer(handle)) {
+        g_playerList.push(handle);
+    } else {
+    }
 	API.setPlayerNametagVisible(handle, false);
 
 	if (handle.Value == API.getLocalPlayer().Value) {
 		g_myProp = getMyProp();
-	}
+    }
 }
 
 function zeroPad(num: number, amount: number) {
@@ -136,7 +137,7 @@ API.onServerEventTrigger.connect(function (name, args) {
 		g_myProp = null;
 	}
 
-	if (name == "prophunt_propset") {
+    if (name == "prophunt_propset") {
 		var client: LocalHandle = args[0];
 
 		if (client.IsNull) {
@@ -161,17 +162,21 @@ API.onServerEventTrigger.connect(function (name, args) {
 	}
 });
 
-API.onKeyDown.connect(function (sender, e) {
-	if (e.KeyCode == Keys.E) {
-		g_rotationLocked = !g_rotationLocked;
-	}
+API.onKeyDown.connect((sender, e) => {
+    if (e.KeyCode == Keys.E && (g_gameState == GameState.Hiding || g_gameState == GameState.Seeking)) {
+        g_rotationLocked = !g_rotationLocked;
+        if (g_rotationLocked)
+            API.setEntityPositionFrozen(API.getLocalPlayer(), true);
+        else
+            API.setEntityPositionFrozen(API.getLocalPlayer(), false);
+    }
 });
 
 API.onUpdate.connect(function () {
-	for (var player of g_playerList) {
+    for (var player of g_playerList) {
 		var playerPos: Vector3 = API.getEntityPosition(player);
 		var propHandle: LocalHandle = API.getEntitySyncedData(player, "prophunt_prophandle");
-		if (propHandle != null && !propHandle.IsNull) {
+        if (propHandle != null && !propHandle.IsNull) {
 			API.setEntityPosition(propHandle, playerPos.Add(new Vector3(0, 0, -0.975)));
 		}
 	}
@@ -193,7 +198,7 @@ API.onUpdate.connect(function () {
 		}
 	}
 
-	var screenResolution = API.getScreenResolutionMantainRatio();
+    var screenResolution = API.getScreenResolutionMantainRatio();
 
 	for (var i = 0; i < g_drawnRays.length; i++) {
 		var ray = g_drawnRays[i];
