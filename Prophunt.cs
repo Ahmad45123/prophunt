@@ -285,5 +285,12 @@ namespace prophunt
 			Log("Forcefully ending by /end");
 			EndGame();
 		}
-	}
+
+        [Command("settype")]
+        public void SetTypeCommand(Client sender, Boolean IsSeeker)
+        {
+            Log("Forcefully setting type /settype");
+            GetPlayer(sender).Seeker = IsSeeker;
+        }
+    }
 }
