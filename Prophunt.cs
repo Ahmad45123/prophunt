@@ -130,6 +130,17 @@ namespace prophunt
 					}
 				}
 			}
+            else if (eventName == "onSeekerHitHider") {
+                var seeker = GetPlayer(sender);
+			    var hider = GetPlayer((Client)arguments[0]);
+                
+                //Set the hider as a spectator.
+			    hider.Spectating = true;
+                
+                //Announce the kill.
+                API.sendChatMessageToAll(
+                    $"~r~[SERVER]: ~w~ Hider ~h~{hider.Client.name}~w~ was found by the seeker. ~h~{seeker.Client.name}");
+			}
 		}
 
 		private void API_onUpdate()
@@ -252,6 +263,8 @@ namespace prophunt
 			}
 			return (numSeekers < numHiders);
 		}
+
+
 
 		[Command("setprop")]
 		public void SetPropCommand(Client sender, int num)

@@ -3,6 +3,7 @@ using GTANetworkShared;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Configuration;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -11,7 +12,21 @@ namespace prophunt
 	public class PhPlayer
 	{
 		public Client Client { get; set; }
-		public bool Spectating { get; set; }
+
+	    private bool _spectating;
+	    public bool Spectating
+	    {
+	        get { return _spectating; }
+	        set
+	        {
+	            if (value == true)
+	            {
+	                CleanUp();
+	                API.shared.setPlayerToSpectator(Client);
+	                _spectating = true;
+	            }
+	        }
+	    }
 		public bool Seeker { get; set; }
 		public GTANetworkServer.Object Prop { get; set; }
 
@@ -31,6 +46,7 @@ namespace prophunt
 
 				Client.resetSyncedData("prophunt_prophandle");
 				Prophunt.Instance.m_events.triggerClientEvent(Client, "prophunt_removeprop");
+			    Spectating = false;
 			}
 		}
 

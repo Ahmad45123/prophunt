@@ -74,15 +74,16 @@ API.onLocalPlayerShoot.connect(function (weaponUsed, aimCoords) {
     dir.Y *= distance * 1.05;
     dir.Z *= distance * 1.05;
     newRay.to = newRay.from.Add(dir);
-    var raycast = API.createRaycast(newRay.from, newRay.to, -1 /* Everything */, null);
+    //We only want the prop of the player.
+    var raycast = API.createRaycast(newRay.from, newRay.to, 16 /* Objects */, null);
     if (raycast.didHitEntity) {
-        //TODO: This needs to hit the prop as well as the player.
-        //TODO: A player (or prop of player) hit should be an instant kill and a point for the seekers. Hider should be put into spectating now.
-        //TODO: A raycast miss or a non-player-prop hit should hurt the player. I suppose heavier weapons (with AOE) should hurt more.
-        API.setEntityTransparency(raycast.hitEntity, 127); // This is just here to quickly visualize what we're hitting
+        //If hit, get the player linked to the prop.
         var player = API.getEntitySyncedData(raycast.hitEntity, "player");
+        API.setEntityTransparency(raycast.hitEntity, 127); // This is just here to quickly visualize what we're hitting
         if (player != null && !player.IsNull) {
-            API.sendChatMessage("Hit player: ~g~" + API.getPlayerName(player));
+            //If hit, send an event to the server about it.
+            API.sendChatMessage("Hit player: ~g~" + API.getPlayerName(player)); //TODO: Remove once done.. just for debug.
+            API.triggerServerEvent("onSeekerHitHider", player);
         }
         else {
             API.sendChatMessage("Hit entity but no player.");
